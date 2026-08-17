@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTIT Crypto Lab - Trực Quan Hóa Giải Thuật Băm & Tính Toàn Vẹn</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <style>
+        :root {
+            /* Palette: Modern Clean SaaS Lab (Light Mode) */
+            --bg-body: #f1f5f9;
+            --bg-card: #ffffff;
+            --bg-card-subtle: #f8fafc;
+            --bg-input: #ffffff;
+            --bg-code: #0f172a;
+            
+            --border: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --border-focus: #3b82f6;
+            
+            --text-title: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+            --text-code: #38bdf8;
+            
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-subtle: #eff6ff;
+            --primary-border: #bfdbfe;
+            
+            --success: #059669;
+            --success-subtle: #ecfdf5;
+            --success-border: #a7f3d0;
+            
+            --danger: #dc2626;
+            --danger-subtle: #fef2f2;
+            --danger-border: #fecaca;
+            
+            --warning: #d97706;
+            --warning-subtle: #fffbeb;
+            --warning-border: #fde68a;
+            
+            --purple: #7c3aed;
+            --purple-subtle: #f5f3ff;
+            --purple-border: #ddd6fe;
+
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.08), 0 4px 8px -4px rgba(0, 0, 0, 0.03);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #090e17;
+            --bg-card: #111827;
+            --bg-card-subtle: #1a2234;
+            --bg-input: #0b1120;
+            --bg-code: #050811;
+            
+            --border: #243046;
+            --border-hover: #334155;
+            --border-focus: #60a5fa;
+            
+            --text-title: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #94a3b8;
+            --text-code: #38bdf8;
+            
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --primary-subtle: rgba(59, 130, 246, 0.12);
+            --primary-border: #1e3a8a;
+            
+            --success: #10b981;
+            --success-subtle: rgba(16, 185, 129, 0.12);
+            --success-border: #065f46;
+            
+            --danger: #ef4444;
+            --danger-subtle: rgba(239, 68, 68, 0.12);
+            --danger-border: #991b1b;
+            
+            --warning: #f59e0b;
+            --warning-subtle: rgba(245, 158, 11, 0.12);
+            --warning-border: #92400e;
+            
+            --purple: #8b5cf6;
+            --purple-subtle: rgba(139, 92, 246, 0.12);
+            --purple-border: #5b21b6;
+
+            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .icon {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-size: 20px;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            user-select: none;
+        }
+
+        /* Top App Header */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .header-wrap {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .brand-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .brand-badge .icon { font-size: 22px; }
+
+        .brand-title h1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-title);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-title p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .header-tools {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .team-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .btn-theme {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            color: var(--text-title);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-theme:hover {
+            background: var(--primary-subtle);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        /* Navigation Bar */
+        .tab-bar-container {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-bar-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0.25rem;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 0.85rem 1.15rem;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.15s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+            background-color: var(--bg-card-subtle);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .tab-button.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* Main Workspace Layout */
+        main {
+            flex: 1;
+            max-width: 1400px;
+            margin: 1.5rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scenario Presets Bar (For 1-Click Presentation) */
+        .preset-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-xs);
+            flex-wrap: wrap;
+        }
+
+        .preset-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-right: 0.5rem;
+        }
+
+        .preset-btn {
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-body);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            background: var(--primary-subtle);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        .preset-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        /* Responsive Grid System */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Card Component */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.35rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-tag {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            background: var(--primary-subtle);
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .badge-blue { background: var(--primary-subtle); color: var(--primary); border: 1px solid var(--primary-border); }
+        .badge-green { background: var(--success-subtle); color: var(--success); border: 1px solid var(--success-border); }
+        .badge-red { background: var(--danger-subtle); color: var(--danger); border: 1px solid var(--danger-border); }
+        .badge-purple { background: var(--purple-subtle); color: var(--purple); border: 1px solid var(--purple-border); }
+        .badge-amber { background: var(--warning-subtle); color: var(--warning); border: 1px solid var(--warning-border); }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-title);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-hint {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text-title);
+            font-family: inherit;
+            font-size: 0.88rem;
+            transition: all 0.15s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 75px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            padding: 0.65rem 1.15rem;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-card-subtle);
+            border-color: var(--border);
+            color: var(--text-title);
+        }
+        .btn-secondary:hover {
+            background-color: var(--primary-subtle);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background-color: #b91c1c;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+        }
+
+        .btn-purple {
+            background-color: var(--purple);
+            color: #ffffff;
+        }
+        .btn-purple:hover {
+            background-color: #6d28d9;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+        }
+
+        .btn-block { width: 100%; }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.78rem; }
+
+        /* Hash Display Box */
+        .hash-card {
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 0.85rem;
+            position: relative;
+            margin-top: 0.5rem;
+        }
+
+        .hash-text {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            word-break: break-all;
+            line-height: 1.5;
+            padding-right: 2rem;
+            font-weight: 600;
+        }
+
+        .copy-trigger {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.15s;
+        }
+        .copy-trigger:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Interactive Verdict Banner */
+        .verdict-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-md);
+            margin-top: 1.25rem;
+            border: 1px solid transparent;
+        }
+
+        .verdict-match {
+            background: var(--success-subtle);
+            border-color: var(--success-border);
+            color: var(--success);
+        }
+
+        .verdict-mismatch {
+            background: var(--danger-subtle);
+            border-color: var(--danger-border);
+            color: var(--danger);
+        }
+
+        .verdict-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .verdict-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .verdict-desc {
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* Interactive Heatmap Matrix */
+        .heatmap-container {
+            background: var(--bg-card-subtle);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .bit-matrix {
+            display: grid;
+            grid-template-columns: repeat(32, 1fr);
+            gap: 2px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .bit-item {
+            aspect-ratio: 1;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+        }
+
+        .bit-same {
+            background: var(--bg-card);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .bit-diff {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+
+        [data-theme="dark"] .bit-diff {
+            background: rgba(239, 68, 68, 0.35);
+            color: #fca5a5;
+            border-color: #ef4444;
+        }
+
+        /* Metric Box */
+        .metric-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .metric-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-title);
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        /* Stepper Flow */
+        .pipeline-stepper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.85rem 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .pipe-step {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .pipe-num {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-subtle);
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--primary-border);
+        }
+
+        .pipe-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-title);
+        }
+
+        .pipe-arrow {
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        /* Tables */
+        .table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-card);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+
+        th {
+            background: var(--bg-card-subtle);
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            color: var(--text-title);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-body);
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: var(--bg-card-subtle); }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        footer {
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            padding: 1.15rem;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .pipeline-stepper { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+            .pipe-arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="header-wrap">
+            <div class="app-brand">
+                <div class="brand-badge">
+                    <span class="icon">shield_lock</span>
+                </div>
+                <div class="brand-title">
+                    <h1>PTIT Crypto Lab &bull; Trực Quan Hóa Giải Thuật Băm</h1>
+                    <p>Mật Mã Học Cơ Sở &bull; Học viện Công nghệ Bưu chính Viễn thông</p>
+                </div>
+            </div>
+            <div class="header-tools">
+                <div class="team-tag">
+                    <span class="icon" style="color:var(--primary); font-size:18px;">groups</span>
+                    <span>Nhóm 08 &ndash; Lớp 04</span>
+                </div>
+                <button class="btn-theme" onclick="toggleTheme()" title="Chuyển chế độ Sáng / Tối">
+                    <span class="icon" id="theme-icon">dark_mode</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar-container">
+        <div class="tab-bar-inner">
+            <button class="tab-button active" onclick="switchTab('tab-integrity')">
+                <span class="icon">verified_user</span>
+                <span>1. Kiểm Tra Toàn Vẹn (SHA-512)</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('tab-avalanche')">
+                <span class="icon">water_drop</span>
+                <span>2. Hiệu Ứng Tuyết Lở (Avalanche)</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('tab-preimage')">
+                <span class="icon">lock_open</span>
+                <span>3. Tấn Công Tiền Ảnh Thứ 2</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('tab-pth')">
+                <span class="icon">vpn_key</span>
+                <span>4. Pass-the-Hash & NTLM</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('tab-benchmark')">
+                <span class="icon">speed</span>
+                <span>5. Ma Trận & Benchmark CPU</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <main>
+
+        <!-- ==================== TAB 1: INTEGRITY ==================== -->
+        <div id="tab-integrity" class="tab-pane active">
+            <!-- 1-Click Presentation Presets -->
+            <div class="preset-bar">
+                <div class="preset-label">
+                    <span class="icon" style="font-size:16px;">play_circle</span>
+                    <span>Kịch bản thuyết trình:</span>
+                </div>
+                <button class="preset-btn active" onclick="loadIntegScenario(1)">
+                    <span class="icon" style="font-size:16px; color:var(--success);">check_circle</span>
+                    <span>TH1: Dữ liệu toàn vẹn (Khớp 100%)</span>
+                </button>
+                <button class="preset-btn" onclick="loadIntegScenario(2)">
+                    <span class="icon" style="font-size:16px; color:var(--danger);">bug_report</span>
+                    <span>TH2: MitM can thiệp sửa dữ liệu</span>
+                </button>
+                <button class="preset-btn" onclick="loadIntegScenario(3)">
+                    <span class="icon" style="font-size:16px; color:var(--warning);">key_off</span>
+                    <span>TH3: Client dùng sai Secret Key</span>
+                </button>
+            </div>
+
+            <!-- Pipeline Stepper -->
+            <div class="pipeline-stepper">
+                <div class="pipe-step">
+                    <div class="pipe-num">1</div>
+                    <div class="pipe-title">Client tính MAC = SHA-512(Data + Key)</div>
+                </div>
+                <span class="icon pipe-arrow">arrow_forward</span>
+                <div class="pipe-step">
+                    <div class="pipe-num">2</div>
+                    <div class="pipe-title">Truyền gói tin qua mạng tới Server</div>
+                </div>
+                <span class="icon pipe-arrow">arrow_forward</span>
+                <div class="pipe-step">
+                    <div class="pipe-num">3</div>
+                    <div class="pipe-title">Server băm lại & So khớp toàn vẹn</div>
+                </div>
+            </div>
+
+            <!-- Side-by-side Cards -->
+            <div class="grid-2">
+                <!-- Client Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="step-tag">A</div>
+                            <h2 class="card-title">Phía Client (Bên Gửi)</h2>
+                        </div>
+                        <span class="badge badge-blue">Tạo Mã Xác Thực MAC</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span>Thông điệp gửi đi:</span>
+                            <span class="form-hint">Text hoặc nội dung file</span>
+                        </div>
+                        <textarea id="integ-msg" oninput="calcIntegrity()">Hello, I am client!</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span>Khóa bí mật chia sẻ (Secret Key):</span>
+                            <span class="form-hint">Chỉ 2 bên biết</span>
+                        </div>
+                        <input type="text" id="integ-key" value="G08L04DEMOSHA" oninput="calcIntegrity()">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span>Thuật toán băm:</span>
+                        </div>
+                        <select id="integ-algo" onchange="calcIntegrity()">
+                            <option value="sha512" selected>SHA-512 (512-bit / 128 ký tự Hex)</option>
+                            <option value="sha256">SHA-256 (256-bit / 64 ký tự Hex)</option>
+                            <option value="sha3-512">SHA3-512 (Cấu trúc Sponge Keccak)</option>
+                            <option value="md5">MD5 (128-bit &ndash; Cũ, Không an toàn)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="margin-top:auto;">
+                        <div class="form-label">
+                            <span>Mã MAC được tính tại Client:</span>
+                            <span class="badge badge-blue" id="client-bit-badge">512 BITS</span>
+                        </div>
+                        <div class="hash-card">
+                            <div class="hash-text" id="client-hash-out">...</div>
+                            <button class="copy-trigger" onclick="copyText('client-hash-out')" title="Copy hash">
+                                <span class="icon" style="font-size:16px;">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Server Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <div class="step-tag" style="background:var(--purple-subtle); color:var(--purple);">B</div>
+                            <h2 class="card-title">Phía Server (Bên Nhận)</h2>
+                        </div>
+                        <span class="badge badge-purple">Kiểm Tra Tính Toàn Vẹn</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span>Dữ liệu thực tế Server nhận được:</span>
+                            <span class="form-hint">Có thể chỉnh sửa để test can thiệp</span>
+                        </div>
+                        <textarea id="server-received-msg" oninput="verifyIntegrity()">Hello, I am client!</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label">
+                            <span>Khóa bí mật lưu tại Server:</span>
+                        </div>
+                        <input type="text" id="server-key" value="G08L04DEMOSHA" oninput="verifyIntegrity()">
+                    </div>
+
+                    <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="tamperData()">
+                            <span class="icon" style="color:var(--danger); font-size:16px;">edit</span>
+                            <span>Giả lập MitM sửa 1 ký tự</span>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="resetData()">
+                            <span class="icon" style="font-size:16px;">refresh</span>
+                            <span>Khôi phục dữ liệu gốc</span>
+                        </button>
+                    </div>
+
+                    <div class="form-group" style="margin-top:auto;">
+                        <div class="form-label">
+                            <span>Mã MAC Server tự tính lại:</span>
+                            <span class="badge badge-purple" id="server-bit-badge">512 BITS</span>
+                        </div>
+                        <div class="hash-card">
+                            <div class="hash-text" id="server-hash-out">...</div>
+                            <button class="copy-trigger" onclick="copyText('server-hash-out')" title="Copy hash">
+                                <span class="icon" style="font-size:16px;">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Verdict Banner -->
+            <div id="verdict-box" class="verdict-banner verdict-match">
+                <div class="verdict-info">
+                    <span class="icon" id="verdict-icon" style="font-size:28px;">check_circle</span>
+                    <div>
+                        <div class="verdict-title" id="verdict-title">DỮ LIỆU HOÀN TOÀN TOÀN VẸN (100% MATCH)</div>
+                        <div class="verdict-desc" id="verdict-desc">Mã MAC phía Server trùng khớp hoàn toàn từng ký tự với mã MAC của Client. Gói tin an toàn và chưa bị chỉnh sửa!</div>
+                    </div>
+                </div>
+                <span class="badge badge-green" id="verdict-badge">XÁC THỰC THÀNH CÔNG</span>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 2: AVALANCHE EFFECT ==================== -->
+        <div id="tab-avalanche" class="tab-pane">
+            <!-- Preset Bar -->
+            <div class="preset-bar">
+                <div class="preset-label">
+                    <span class="icon" style="font-size:16px;">tune</span>
+                    <span>Mẫu so sánh Tuyết lở:</span>
+                </div>
+                <button class="preset-btn active" onclick="loadAvScenario(1)">
+                    <span>Đổi 1 số: PTIT 2026 vs PTIT 2027</span>
+                </button>
+                <button class="preset-btn" onclick="loadAvScenario(2)">
+                    <span>Đổi 1 chữ: Hello World vs Jello World</span>
+                </button>
+                <button class="preset-btn" onclick="loadAvScenario(3)">
+                    <span>Thêm dấu chấm cuối câu</span>
+                </button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="icon" style="color:var(--primary);">water_drop</span>
+                        <h2 class="card-title">Phân Tích Độ Khuếch Tán Bit (Avalanche Effect)</h2>
+                    </div>
+                    <span class="badge badge-blue">Khuếch tán Mật mã</span>
+                </div>
+
+                <!-- Input Grid -->
+                <div class="grid-2" style="margin-bottom:1.25rem;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <div class="form-label"><span>Chuỗi đầu vào 1 (Original):</span></div>
+                        <input type="text" id="av-text1" value="PTIT - Mat Ma Hoc Co So 2026" oninput="runAvalanche()">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <div class="form-label"><span>Chuỗi đầu vào 2 (Chỉ khác 1 ký tự):</span></div>
+                        <input type="text" id="av-text2" value="PTIT - Mat Ma Hoc Co So 2027" oninput="runAvalanche()">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:0.5rem;">
+                    <div style="display:flex; align-items:center; gap:0.75rem;">
+                        <label style="font-size:0.85rem; font-weight:600; color:var(--text-title);">Giải thuật:</label>
+                        <select id="av-algo" onchange="runAvalanche()" style="width:200px;">
+                            <option value="sha512" selected>SHA-512 (512 bits)</option>
+                            <option value="sha256">SHA-256 (256 bits)</option>
+                            <option value="sha3-512">SHA3-512 (Keccak)</option>
+                            <option value="md5">MD5 (128 bits)</option>
+                        </select>
+                    </div>
+                    <span style="font-size:0.8rem; color:var(--text-muted);">Thay đổi 1 bit đầu vào &rarr; Phải đảo lộn xấp xỉ 50% bit đầu ra</span>
+                </div>
+
+                <!-- Metrics 4-Col Grid -->
+                <div class="grid-4" style="margin-bottom:1.25rem;">
+                    <div class="metric-box">
+                        <div class="metric-label">Tổng kích thước băm</div>
+                        <div class="metric-val" id="av-total-bits" style="color:var(--primary);">512</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Số bit bị đảo ngược (Diff)</div>
+                        <div class="metric-val" id="av-diff-bits" style="color:var(--danger);">264</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Tỉ lệ Tuyết lở thực tế</div>
+                        <div class="metric-val" id="av-diff-percent" style="color:var(--success);">51.56%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Đánh giá tiêu chuẩn</div>
+                        <div class="metric-val" style="color:var(--success); font-size:1.15rem;">Đạt chuẩn (~50%)</div>
+                    </div>
+                </div>
+
+                <!-- Heatmap Grid -->
+                <div class="heatmap-container">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+                        <span style="font-size:0.8rem; font-weight:700; color:var(--text-title);">Trực quan hóa ma trận Bit (Màu đỏ = Bit bị đảo lộn do hiệu ứng Tuyết lở):</span>
+                        <div style="display:flex; gap:1rem; font-size:0.75rem;">
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><span style="display:inline-block; width:10px; height:10px; background:#fee2e2; border:1px solid #fca5a5; border-radius:2px;"></span> Bit thay đổi</span>
+                            <span style="display:flex; align-items:center; gap:0.25rem;"><span style="display:inline-block; width:10px; height:10px; background:var(--bg-card); border:1px solid var(--border); border-radius:2px;"></span> Bit giữ nguyên</span>
+                        </div>
+                    </div>
+                    <div class="bit-matrix" id="av-bit-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 3: SECOND PREIMAGE ATTACK ==================== -->
+        <div id="tab-preimage" class="tab-pane">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="icon" style="color:var(--danger);">security_update_warning</span>
+                        <h2 class="card-title">Mô Phỏng Tấn Công Tiền Ảnh Thứ Hai (Second Preimage Attack)</h2>
+                    </div>
+                    <span class="badge badge-red">Mục 5.3 Báo Cáo</span>
+                </div>
+
+                <div class="grid-2" style="margin-bottom:1.25rem;">
+                    <div>
+                        <div class="form-group">
+                            <div class="form-label"><span>Thông điệp thật ($m_1$):</span></div>
+                            <input type="text" id="pi-msg" value="Hello, I am client!">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-label"><span>Khóa bí mật chia sẻ:</span></div>
+                            <input type="text" id="pi-key" value="G08L04DEMOSHA">
+                        </div>
+
+                        <div class="form-group">
+                            <div class="form-label">
+                                <span>Độ dài tiền tố va chạm cần thám mã:</span>
+                                <span class="form-hint">Không gian vét cạn</span>
+                            </div>
+                            <select id="pi-prefix">
+                                <option value="4" selected>4 ký tự hex (16-bit) &sim; 65,536 khả năng (Rất nhanh: ~0.1 - 0.3s)</option>
+                                <option value="5">5 ký tự hex (20-bit) &sim; 1,048,576 khả năng (~1 - 3s)</option>
+                                <option value="3">3 ký tự hex (12-bit) &sim; 4,096 khả năng (Tức thì: &lt; 0.05s)</option>
+                            </select>
+                        </div>
+
+                        <button class="btn btn-danger btn-block" id="btn-run-attack" onclick="runPreimageAttack()">
+                            <span class="icon">bolt</span>
+                            <span>Bắt Đầu Brute-Force Tìm Chuỗi Giả Mạo</span>
+                        </button>
+                    </div>
+
+                    <div>
+                        <div class="form-group">
+                            <div class="form-label"><span>Trạng thái & Tiến trình tấn công:</span></div>
+                            <div class="hash-card" id="pi-status" style="min-height: 220px; font-family:'JetBrains Mono', monospace; font-size:0.8rem; color:var(--text-body); white-space:pre-wrap;">
+Sẵn sàng thực hiện tấn công...
+Bấm nút "Bắt Đầu Brute-Force" để tìm thông điệp giả mạo có cùng tiền tố băm.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theory Comparison -->
+                <div style="background:var(--bg-card-subtle); border:1px solid var(--border); border-radius:var(--radius-md); padding:1rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.4rem; color:var(--text-title); font-weight:700; font-size:0.88rem;">
+                        <span class="icon" style="color:var(--warning); font-size:18px;">lightbulb</span>
+                        <span>Ý nghĩa Mật mã học & So sánh Độ an toàn:</span>
+                    </div>
+                    <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.6;">
+                        - <strong>Mô phỏng 16-bit:</strong> Tìm ra chuỗi va chạm trong vòng chớp mắt (&lt; 0.3s) vì không gian thử chỉ có $2^{16} = 65,536$ khả năng.<br>
+                        - <strong>SHA-512 chuẩn đầy đủ:</strong> Không gian tìm kiếm là $2^{512} \approx 1.34 \times 10^{154}$ khả năng. Ngay cả toàn bộ máy tính trên toàn cầu chạy liên tục từ khi vũ trụ hình thành đến nay cũng không thể tìm ra va chạm, chứng minh SHA-512 an toàn tuyệt đối.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 4: PASS-THE-HASH ==================== -->
+        <div id="tab-pth" class="tab-pane">
+            <div class="grid-2">
+                <!-- NTLM Calculator -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="icon" style="color:var(--primary);">key</span>
+                            <h2 class="card-title">Cơ Chế Sinh NTLM Hash Trên Windows</h2>
+                        </div>
+                        <span class="badge badge-blue">Thuật toán MD4</span>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label"><span>Nhập mật khẩu kiểm tra:</span></div>
+                        <input type="text" id="ntlm-input-pwd" value="12345678" oninput="calcNtlm()">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label"><span>1. Chuỗi nhị phân UTF-16LE Hex:</span></div>
+                        <div class="hash-card">
+                            <div class="hash-text" id="ntlm-utf16-out" style="color:var(--text-muted);">31003200330034003500360037003800</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-label"><span>2. NTLM Hash = MD4(UTF-16LE(Password)):</span></div>
+                        <div class="hash-card">
+                            <div class="hash-text" id="ntlm-hash-out" style="color:var(--primary); font-weight:700;">259745cb123a52aa2e693aaacca2db52</div>
+                            <button class="copy-trigger" onclick="copyText('ntlm-hash-out')">
+                                <span class="icon" style="font-size:16px;">content_copy</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background:var(--success-subtle); border:1px solid var(--success-border); border-radius:var(--radius-sm); padding:0.75rem; margin-top:auto; display:flex; align-items:center; gap:0.5rem; font-size:0.82rem; color:var(--success); font-weight:600;">
+                        <span class="icon" style="font-size:18px;">check_circle</span>
+                        <span>Khớp chính xác 100% với giá trị NTLM Hash trích xuất từ Mimikatz trong Báo cáo (Hình 40)!</span>
+                    </div>
+                </div>
+
+                <!-- PtH Flow Explanation -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title-group">
+                            <span class="icon" style="color:var(--danger);">terminal</span>
+                            <h2 class="card-title">Quy Trình Tấn Công Pass-the-Hash</h2>
+                        </div>
+                        <span class="badge badge-red">Impacket Toolset</span>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <div style="background:var(--bg-card-subtle); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem;">
+                            <div style="font-weight:700; color:var(--text-title); font-size:0.85rem; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.4rem;">
+                                <span class="badge badge-blue">Bước 1</span> Dump NTLM Hash từ RAM (LSASS)
+                            </div>
+                            <p style="font-size:0.8rem; color:var(--text-muted);">
+                                Hacker chạy công cụ <code>Mimikatz</code> đọc bộ nhớ tiến trình <code>lsass.exe</code> để lấy chuỗi NTLM Hash tĩnh lưu trong Windows SAM.
+                            </p>
+                        </div>
+
+                        <div style="background:var(--bg-card-subtle); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem;">
+                            <div style="font-weight:700; color:var(--text-title); font-size:0.85rem; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.4rem;">
+                                <span class="badge badge-purple">Bước 2</span> Kết nối SMB / WMI qua Impacket
+                            </div>
+                            <p style="font-size:0.8rem; color:var(--text-muted);">
+                                Sử dụng lệnh: <code>impacket-wmiexec -hashes :259745cb... victim@IP</code> mà <strong>không cần mật khẩu 12345678</strong>.
+                            </p>
+                        </div>
+
+                        <div style="background:var(--bg-card-subtle); border:1px solid var(--border); border-radius:var(--radius-sm); padding:0.75rem;">
+                            <div style="font-weight:700; color:var(--text-title); font-size:0.85rem; margin-bottom:0.2rem; display:flex; align-items:center; gap:0.4rem;">
+                                <span class="badge badge-red">Bước 3</span> Vượt qua Challenge-Response & Chiếm quyền
+                            </div>
+                            <p style="font-size:0.8rem; color:var(--text-muted);">
+                                Server chỉ yêu cầu dùng NTLM Hash để mã hóa Challenge Nonce, do đó Hacker ký thành công và được cấp ngay quyền Administrator!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== TAB 5: BENCHMARK & MATRIX ==================== -->
+        <div id="tab-benchmark" class="tab-pane">
+            <!-- Multi-Hash Matrix -->
+            <div class="card" style="margin-bottom:1.25rem;">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="icon" style="color:var(--primary);">table_chart</span>
+                        <h2 class="card-title">Ma Trận So Sánh Trực Tiếp 7 Thuật Toán Băm</h2>
+                    </div>
+                    <span class="badge badge-blue">Multi-Hash Live Engine</span>
+                </div>
+
+                <div class="form-group">
+                    <div class="form-label"><span>Nhập dữ liệu cần băm đồng thời:</span></div>
+                    <input type="text" id="matrix-input" value="PTIT Cryptography Lab 2026 - CSATTT" oninput="runMultiHash()">
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Thuật toán</th>
+                                <th>Cấu trúc</th>
+                                <th>Kích thước băm</th>
+                                <th>Kích thước khối</th>
+                                <th>Trạng thái an toàn</th>
+                                <th>Mã băm kết quả (Digest)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="multi-hash-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CPU Speed Benchmark -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title-group">
+                        <span class="icon" style="color:var(--purple);">speed</span>
+                        <h2 class="card-title">Đo Lường Tốc Độ Xử Lý CPU Thực Tế (50,000 Iterations)</h2>
+                    </div>
+                    <button class="btn btn-purple btn-sm" id="btn-run-bench" onclick="runBenchmark()">
+                        <span class="icon" style="font-size:16px;">play_arrow</span>
+                        <span>Chạy Đo Tốc Độ CPU</span>
+                    </button>
+                </div>
+
+                <div class="table-wrap" id="bench-wrap" style="display:none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Thuật toán</th>
+                                <th>Thời gian thực thi</th>
+                                <th>Tốc độ băm (Hashes/sec)</th>
+                                <th>Băng thông ước tính</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bench-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        Báo cáo Bài tập lớn Môn Mật Mã Học Cơ Sở &bull; Học viện Công nghệ Bưu chính Viễn thông &bull; Nhóm 08 &ndash; Lớp 04
+    </footer>
+
+    <!-- Script Logic -->
+    <script>
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const target = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', target);
+            document.getElementById('theme-icon').innerText = target === 'dark' ? 'light_mode' : 'dark_mode';
+        }
+
+        // Copy Helper
+        function copyText(elementId) {
+            const el = document.getElementById(elementId);
+            navigator.clipboard.writeText(el.innerText.trim()).then(() => {
+                alert('Đã sao chép mã băm vào Clipboard!');
+            });
+        }
+
+        // ================= TAB 1: INTEGRITY =================
+        let currentClientHash = "";
+
+        async function calcIntegrity() {
+            const text = document.getElementById('integ-msg').value;
+            const key = document.getElementById('integ-key').value;
+            const algo = document.getElementById('integ-algo').value;
+
+            const res = await fetch('/api/hash', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text, key, algo })
+            });
+            const data = await res.json();
+            currentClientHash = data.hash;
+            document.getElementById('client-hash-out').innerText = data.hash;
+            document.getElementById('client-bit-badge').innerText = data.bit_length + ' BITS';
+            
+            verifyIntegrity();
+        }
+
+        async function verifyIntegrity() {
+            const text = document.getElementById('server-received-msg').value;
+            const key = document.getElementById('server-key').value;
+            const algo = document.getElementById('integ-algo').value;
+
+            const res = await fetch('/api/hash', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text, key, algo })
+            });
+            const data = await res.json();
+            const serverHash = data.hash;
+            document.getElementById('server-hash-out').innerText = serverHash;
+            document.getElementById('server-bit-badge').innerText = data.bit_length + ' BITS';
+
+            const vBox = document.getElementById('verdict-box');
+            const vIcon = document.getElementById('verdict-icon');
+            const vTitle = document.getElementById('verdict-title');
+            const vDesc = document.getElementById('verdict-desc');
+            const vBadge = document.getElementById('verdict-badge');
+
+            if (currentClientHash && currentClientHash === serverHash) {
+                vBox.className = 'verdict-banner verdict-match';
+                vIcon.innerText = 'check_circle';
+                vTitle.innerText = 'DỮ LIỆU HOÀN TOÀN TOÀN VẸN (100% MATCH)';
+                vDesc.innerText = 'Mã MAC phía Server trùng khớp hoàn toàn từng ký tự với Client. Gói tin an toàn và chưa bị can thiệp!';
+                vBadge.className = 'badge badge-green';
+                vBadge.innerText = 'XÁC THỰC THÀNH CÔNG';
+            } else {
+                vBox.className = 'verdict-banner verdict-mismatch';
+                vIcon.innerText = 'cancel';
+                vTitle.innerText = 'CẢNH BÁO: DỮ LIỆU BỊ THAY ĐỔI HOẶC SAI KHÓA (MISMATCH)';
+                vDesc.innerText = 'Mã MAC Server tính được không khớp với Client. Hệ thống lập tức từ chối nhận gói tin giả mạo!';
+                vBadge.className = 'badge badge-red';
+                vBadge.innerText = 'TỪ CHỐI GÓI TIN';
+            }
+        }
+
+        function loadIntegScenario(type) {
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if (type === 1) { // Intact
+                document.getElementById('integ-msg').value = "Hello, I am client!";
+                document.getElementById('integ-key').value = "G08L04DEMOSHA";
+                document.getElementById('server-received-msg').value = "Hello, I am client!";
+                document.getElementById('server-key').value = "G08L04DEMOSHA";
+            } else if (type === 2) { // Tampered
+                document.getElementById('integ-msg').value = "Hello, I am client!";
+                document.getElementById('integ-key').value = "G08L04DEMOSHA";
+                document.getElementById('server-received-msg').value = "Hello, I am client! [TAMPERED]";
+                document.getElementById('server-key').value = "G08L04DEMOSHA";
+            } else if (type === 3) { // Wrong Key
+                document.getElementById('integ-msg').value = "Hello, I am client!";
+                document.getElementById('integ-key').value = "G08L04DEMOSHA_WRONG";
+                document.getElementById('server-received-msg').value = "Hello, I am client!";
+                document.getElementById('server-key').value = "G08L04DEMOSHA";
+            }
+            calcIntegrity();
+        }
+
+        function tamperData() {
+            const cur = document.getElementById('server-received-msg').value;
+            document.getElementById('server-received-msg').value = cur + " [TAMPERED]";
+            verifyIntegrity();
+        }
+
+        function resetData() {
+            document.getElementById('server-received-msg').value = document.getElementById('integ-msg').value;
+            document.getElementById('server-key').value = document.getElementById('integ-key').value;
+            verifyIntegrity();
+        }
+
+        // ================= TAB 2: AVALANCHE =================
+        async function runAvalanche() {
+            const text1 = document.getElementById('av-text1').value;
+            const text2 = document.getElementById('av-text2').value;
+            const algo = document.getElementById('av-algo').value;
+
+            const res = await fetch('/api/avalanche', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text1, text2, algo })
+            });
+            const data = await res.json();
+
+            document.getElementById('av-total-bits').innerText = data.total_bits;
+            document.getElementById('av-diff-bits').innerText = data.diff_bits;
+            document.getElementById('av-diff-percent').innerText = data.diff_percentage + '%';
+
+            const grid = document.getElementById('av-bit-grid');
+            let gridHtml = '';
+            for (let i = 0; i < data.bin1.length; i++) {
+                const isDiff = data.bin1[i] !== data.bin2[i];
+                const cls = isDiff ? 'bit-item bit-diff' : 'bit-item bit-same';
+                gridHtml += `<div class="${cls}" title="Bit ${i+1}: ${data.bin1[i]} -> ${data.bin2[i]}">${data.bin2[i]}</div>`;
+            }
+            grid.innerHTML = gridHtml;
+        }
+
+        function loadAvScenario(type) {
+            document.querySelectorAll('#tab-avalanche .preset-btn').forEach(b => b.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if (type === 1) {
+                document.getElementById('av-text1').value = "PTIT - Mat Ma Hoc Co So 2026";
+                document.getElementById('av-text2').value = "PTIT - Mat Ma Hoc Co So 2027";
+            } else if (type === 2) {
+                document.getElementById('av-text1').value = "Hello World";
+                document.getElementById('av-text2').value = "Jello World";
+            } else if (type === 3) {
+                document.getElementById('av-text1').value = "Security Testing";
+                document.getElementById('av-text2').value = "Security Testing.";
+            }
+            runAvalanche();
+        }
+
+        // ================= TAB 3: PREIMAGE =================
+        async function runPreimageAttack() {
+            const text = document.getElementById('pi-msg').value;
+            const key = document.getElementById('pi-key').value;
+            const prefix_chars = document.getElementById('pi-prefix').value;
+            const statusBox = document.getElementById('pi-status');
+            const btn = document.getElementById('btn-run-attack');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Đang chạy Brute-Force...';
+            statusBox.innerText = 'Đang sinh chuỗi ngẫu nhiên và tính toán SHA-512...';
+
+            const res = await fetch('/api/preimage_attack', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text, key, prefix_chars, algo: 'sha512' })
+            });
+            const data = await res.json();
+
+            btn.disabled = false;
+            btn.innerHTML = '<span class="icon">bolt</span> Bắt Đầu Brute-Force Tìm Chuỗi Giả Mạo';
+
+            if (data.success) {
+                statusBox.innerText = 
+`[✓] TÌM THẤY VA CHẠM THÀNH CÔNG!
+-----------------------------------------------------------------
+- Thông điệp thật (m1)   : "${data.original_text}"
+  Hash thật              : ${data.real_hash}
+
+- Tiền tố mục tiêu       : "${data.target_prefix}" (${prefix_chars * 4} bits)
+- Thông điệp giả mạo (m2): "${data.fake_text}"
+  Hash giả mạo           : ${data.fake_hash}
+
+- Số lần thử (Attempts)  : ${data.attempts.toLocaleString()} lần
+- Thời gian thực thi     : ${data.elapsed_seconds} giây
+- Tốc độ băm (Throughput): ${data.hashes_per_sec.toLocaleString()} hashes/sec
+
+[🔥] KẾT LUẬN: Do Server chỉ kiểm tra ${prefix_chars * 4}-bit đầu, Server bị đánh lừa và báo "Dữ liệu toàn vẹn!"`;
+            } else {
+                statusBox.innerText = 'Chưa tìm thấy va chạm trong giới hạn lần thử.';
+            }
+        }
+
+        // ================= TAB 4: NTLM =================
+        async function calcNtlm() {
+            const password = document.getElementById('ntlm-input-pwd').value;
+            const res = await fetch('/api/ntlm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ password })
+            });
+            const data = await res.json();
+            document.getElementById('ntlm-utf16-out').innerText = data.utf16le_hex;
+            document.getElementById('ntlm-hash-out').innerText = data.ntlm_hash;
+        }
+
+        // ================= TAB 5: MULTI-HASH & BENCHMARK =================
+        async function runMultiHash() {
+            const text = document.getElementById('matrix-input').value;
+            const res = await fetch('/api/hash_all', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text })
+            });
+            const data = await res.json();
+            
+            const tbody = document.getElementById('multi-hash-tbody');
+            let html = '';
+            data.results.forEach(r => {
+                let badgeCls = 'badge-blue';
+                if (r.status === 'Broken' || r.status === 'Vulnerable') badgeCls = 'badge-red';
+                else if (r.status === 'Deprecated') badgeCls = 'badge-amber';
+                else if (r.status === 'Secure' || r.status === 'Optimal') badgeCls = 'badge-green';
+                else if (r.status === 'Next-Gen') badgeCls = 'badge-purple';
+
+                html += `
+                    <tr>
+                        <td><strong>${r.name}</strong></td>
+                        <td>${r.family}</td>
+                        <td><code>${r.bits} bits</code></td>
+                        <td>${r.block} bits</td>
+                        <td><span class="badge ${badgeCls}">${r.status}</span></td>
+                        <td><code style="font-size:0.75rem; word-break:break-all; color:var(--primary); font-weight:600;">${r.hash}</code></td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        async function runBenchmark() {
+            const btn = document.getElementById('btn-run-bench');
+            const wrap = document.getElementById('bench-wrap');
+            const tbody = document.getElementById('bench-tbody');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Đang đo lường 50,000 iterations...';
+
+            const res = await fetch('/api/benchmark', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ iterations: 50000 })
+            });
+            const data = await res.json();
+
+            btn.disabled = false;
+            btn.innerHTML = '<span class="icon">play_arrow</span> Chạy Đo Tốc Độ CPU';
+            wrap.style.display = 'block';
+
+            let html = '';
+            data.results.forEach(r => {
+                html += `
+                    <tr>
+                        <td><strong>${r.algo}</strong></td>
+                        <td>${r.elapsed_ms} ms</td>
+                        <td><strong style="color:var(--primary); font-family:'JetBrains Mono';">${r.ops_per_sec.toLocaleString()} ops/s</strong></td>
+                        <td>~${r.speed_mb_s} MB/s</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // Init on load
+        window.addEventListener('DOMContentLoaded', () => {
+            calcIntegrity();
+            runAvalanche();
+            calcNtlm();
+            runMultiHash();
+        });
+    </script>
+</body>
+</html>
