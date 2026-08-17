@@ -271,5 +271,9 @@ def api_benchmark():
     })
 
 if __name__ == '__main__':
-    print("Khởi chạy Web Dashboard tại http://127.0.0.1:5000")
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    host = '0.0.0.0' if os.environ.get('RENDER') else '127.0.0.1'
+    debug = not os.environ.get('RENDER')
+    print(f"Khởi chạy Web Dashboard tại http://{host}:{port}")
+    app.run(host=host, port=port, debug=debug)
